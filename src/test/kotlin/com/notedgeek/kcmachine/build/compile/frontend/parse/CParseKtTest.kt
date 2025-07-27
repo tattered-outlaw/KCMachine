@@ -8,7 +8,7 @@ class CParseKtTest {
 
     @Test
     fun testParseSkeleton() {
-        val result = parse("int main() { return 10; }")
+        val result = parseC("int main() { return 10; }")
         assertIs<CGCompilationUnit>(result)
     }
 }

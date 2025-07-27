@@ -1,13 +1,13 @@
 package com.notedgeek.kcmachine.build.compile
 
-sealed interface CGPart {
+sealed interface CGElement {
     val start: Int
     val end: Int
 }
 
-data class CGCompilationUnit(override val start: Int, override val end: Int, val externalDeclarations: List<CGExternalDeclaration>) : CGPart
+data class CGCompilationUnit(override val start: Int, override val end: Int, val externalDeclarations: List<CGExternalDeclaration>) : CGElement
 
-interface CGExternalDeclaration : CGPart
+interface CGExternalDeclaration : CGElement
 
 data class CGFunctionDefinition(
     override val start: Int,
@@ -17,13 +17,13 @@ data class CGFunctionDefinition(
     val compoundStatement: CGCompoundStatement
 ) : CGExternalDeclaration
 
-interface CGStatement : CGPart
+interface CGStatement : CGElement
 
 data class CGCompoundStatement(override val start: Int, override val end: Int, val statements: List<CGStatement>) : CGStatement
 
-data class CGReturnStatement(override val start: Int, override val end: Int, val expression: CGExpression?) : CGStatement
+data class CGReturnStatement(override val start: Int, override val end: Int, val expression: CGExpression) : CGStatement
 
-interface CGExpression : CGPart
+interface CGExpression : CGElement
 
 interface CGPrimaryExpression : CGExpression
 
@@ -31,7 +31,7 @@ interface CGConstantExpression : CGPrimaryExpression
 
 data class CGIntegerConstant(override val start: Int, override val end: Int, val value: Long) : CGConstantExpression
 
-interface CGDeclarator : CGPart
+interface CGDeclarator : CGElement
 
 interface CGDirectDeclarator : CGDeclarator
 
@@ -41,7 +41,7 @@ interface CGFunctionDeclarator : CGDirectDeclarator
 
 data class CGEmptyFunctionDeclarator(override val start: Int, override val end: Int, val declarator: CGDeclarator) : CGFunctionDeclarator
 
-interface CGDeclarationSpecifier : CGPart
+interface CGDeclarationSpecifier : CGElement
 
 enum class CGType(val lexeme: String) {
     INT("int")

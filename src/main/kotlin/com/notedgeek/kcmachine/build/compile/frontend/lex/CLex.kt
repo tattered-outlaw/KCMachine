@@ -2,34 +2,27 @@ package com.notedgeek.kcmachine.build.compile.frontend.lex
 
 import com.notedgeek.kcmachine.build.compile.frontend.*
 
-private const val IDENTIFIER_PATTERN = "[_a-zA-Z][_a-zA-Z0-9]*"
-private const val WHITESPACE_PATTERN = "\\s+"
-private const val DECIMAL_INTEGRAL_PATTERN = "[0-9]+"
+private val patternMap = mapOf(
+    "[_a-zA-Z][_a-zA-Z0-9]*" to ::Identifier,
+    "\\s+" to ::Whitespace,
+    "[0-9]+" to ::DecimalIntegralLiteral
+)
 
-private val SYMBOL_PATTERNS = listOf("\\(", "\\)", "\\{", "\\}", ";")
+private val symbolList = listOf("\\(", "\\)", "\\{", "\\}", ";")
+
+private val tokenSpecs = sequence {
+    yieldAll(patternMap.entries.map(::TokenSpec))
+    yieldAll(symbolList.map { TokenSpec(it, ::Symbol) })
+}.toList()
+
 private val KEYWORDS = setOf("int", "return")
 
-private val tokenSpecs = run {
-    val result = mutableListOf(
-        TokenSpec(IDENTIFIER_PATTERN, ::Identifier), TokenSpec(WHITESPACE_PATTERN, ::Whitespace),
-        TokenSpec(DECIMAL_INTEGRAL_PATTERN, ::DecimalIntegralLiteral)
-    )
-    result.addAll(SYMBOL_PATTERNS.map { TokenSpec(it, ::Symbol) })
-    result
-}
-
-private val lexer = Lexer(tokenSpecs)
-
-fun lexC(source: String): List<Token> {
-    val result = ArrayList<Token>()
-
-    for (token in lexer.lex(source)) {
+fun lexC(source: String): List<Token> = sequence {
+    for (token in lex(tokenSpecs, source)) {
         if (token is Identifier && KEYWORDS.contains(token.lexeme)) {
-            result.add(Keyword(token.lexeme))
+            yield(Keyword(token.lexeme))
         } else if (token !is Whitespace) {
-            result.add(token)
+            yield(token)
         }
     }
-
-    return result
-}
+}.toList()

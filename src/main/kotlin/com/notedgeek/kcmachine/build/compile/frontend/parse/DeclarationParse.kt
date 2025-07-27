@@ -47,8 +47,7 @@ fun parseDirectDeclarator(tokenBuffer: TokenBuffer): CGDeclarator {
     return CGEmptyFunctionDeclarator(start, tokenBuffer.index, directDeclarator)
 }
 
-fun parseDeclarationSpecifiers(tokenBuffer: TokenBuffer): List<CGDeclarationSpecifier> {
-    val result = ArrayList<CGDeclarationSpecifier>()
+fun parseDeclarationSpecifiers(tokenBuffer: TokenBuffer): List<CGDeclarationSpecifier> = sequence {
     while (true) {
         val lexeme = tokenBuffer.nextLexeme()
         val start = tokenBuffer.index
@@ -56,15 +55,13 @@ fun parseDeclarationSpecifiers(tokenBuffer: TokenBuffer): List<CGDeclarationSpec
         val type = CGType.lexemeMap[lexeme]
         if (type != null) {
             tokenBuffer.consume()
-            result.add(CGTypeSpecifier(start, tokenBuffer.index, type))
+            yield(CGTypeSpecifier(start, tokenBuffer.index, type))
             continue
         }
 
         break
     }
-
-    return result
-}
+}.toList()
 
 private fun parseExternalDeclarationHead(tokenBuffer: TokenBuffer): ExternalDeclarationHead {
     val start = tokenBuffer.index

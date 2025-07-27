@@ -7,19 +7,20 @@ import com.notedgeek.kcmachine.build.compile.CGStatement
 fun parseStatement(tokenBuffer: TokenBuffer): CGStatement {
     val nextLexeme = tokenBuffer.nextLexeme()
     return when (nextLexeme) {
-        "{" -> parseCompoundStatement(tokenBuffer)
-        "return" -> parseReturnStatement(tokenBuffer)
+        "{" -> ::parseCompoundStatement
+        "return" -> ::parseReturnStatement
         else -> TODO()
-    }
+    }.invoke(tokenBuffer)
 }
 
 fun parseCompoundStatement(tokenBuffer: TokenBuffer): CGCompoundStatement {
     val start = tokenBuffer.index
     tokenBuffer.consume("{")
-    val statements = ArrayList<CGStatement>()
-    while (tokenBuffer.nextLexeme() != "}") {
-        statements.add(parseStatement(tokenBuffer))
-    }
+    val statements = sequence {
+        while (tokenBuffer.nextLexeme() != "}") {
+           yield(parseStatement(tokenBuffer))
+        }
+    }.toList()
     tokenBuffer.consume("}")
     return CGCompoundStatement(start, tokenBuffer.index, statements)
 }

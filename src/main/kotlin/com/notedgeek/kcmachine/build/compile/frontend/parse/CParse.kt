@@ -4,7 +4,7 @@ import com.notedgeek.kcmachine.build.compile.CGCompilationUnit
 import com.notedgeek.kcmachine.build.compile.CGExternalDeclaration
 import com.notedgeek.kcmachine.build.compile.frontend.lex.lexC
 
-fun parse(source: String) : CGCompilationUnit {
+fun parse(source: String): CGCompilationUnit {
     return parseCompilationUnit(TokenBuffer(lexC(source)))
 }
 

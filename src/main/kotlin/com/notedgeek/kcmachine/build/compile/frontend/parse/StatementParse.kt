@@ -4,16 +4,16 @@ import com.notedgeek.kcmachine.build.compile.CGCompoundStatement
 import com.notedgeek.kcmachine.build.compile.CGReturnStatement
 import com.notedgeek.kcmachine.build.compile.CGStatement
 
-fun parseStatement(tokenBuffer: TokenBuffer) : CGStatement {
+fun parseStatement(tokenBuffer: TokenBuffer): CGStatement {
     val nextLexeme = tokenBuffer.nextLexeme()
-    return when(nextLexeme) {
+    return when (nextLexeme) {
         "{" -> parseCompoundStatement(tokenBuffer)
         "return" -> parseReturnStatement(tokenBuffer)
         else -> TODO()
     }
 }
 
-fun parseCompoundStatement (tokenBuffer: TokenBuffer) : CGCompoundStatement {
+fun parseCompoundStatement(tokenBuffer: TokenBuffer): CGCompoundStatement {
     val start = tokenBuffer.index
     tokenBuffer.consume("{")
     val statements = ArrayList<CGStatement>()
@@ -24,7 +24,7 @@ fun parseCompoundStatement (tokenBuffer: TokenBuffer) : CGCompoundStatement {
     return CGCompoundStatement(start, tokenBuffer.index, statements)
 }
 
-fun parseReturnStatement(tokenBuffer: TokenBuffer) : CGReturnStatement {
+fun parseReturnStatement(tokenBuffer: TokenBuffer): CGReturnStatement {
     val start = tokenBuffer.index
     tokenBuffer.consume("return")
     val expression = parseExpression(tokenBuffer)

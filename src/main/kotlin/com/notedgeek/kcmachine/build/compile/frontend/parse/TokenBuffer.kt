@@ -2,17 +2,17 @@ package com.notedgeek.kcmachine.build.compile.frontend.parse
 
 import com.notedgeek.kcmachine.build.compile.frontend.Token
 
-class TokenBuffer(private val tokens: List<Token>)  {
+class TokenBuffer(private val tokens: List<Token>) {
 
     var index = 0
         private set
 
-    fun nextToken() : Token {
+    fun nextToken(): Token {
         ensureHasNextToken()
         return tokens[index]
     }
 
-    fun nextLexeme() : String {
+    fun nextLexeme(): String {
         ensureHasNextToken()
         return tokens[index].lexeme
     }

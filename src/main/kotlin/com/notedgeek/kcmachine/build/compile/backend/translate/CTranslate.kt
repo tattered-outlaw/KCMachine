@@ -15,8 +15,8 @@ fun translateC(compilationUnit: CompilationUnit, translationContext: Translation
 private fun translateFunctionDefinition(functionDefinition: FunctionDefinition, translationContext: TranslationContext) {
     with(translationContext) {
         emit("${functionDefinition.name}:")
-        emit(Inst.PUSH_BP())
-        emit(Inst.SP_TO_BP())
+        emit(PUSH_BP())
+        emit(SP_TO_BP())
     }
     functionDefinition.statement.statements.forEach { translateStatement(it, translationContext) }
 }
@@ -35,10 +35,10 @@ private fun translateCompoundStatement(compoundStatement: CompoundStatement, tra
 private fun translateReturnStatement(returnStatement: ReturnStatement, translationContext: TranslationContext) {
     translateExpression(returnStatement.expression, translationContext)
     with(translationContext) {
-        emit(Inst.SAVE_A("0"))
-        emit(Inst.BP_TO_SP())
-        emit(Inst.POP_BP())
-        emit(Inst.RETURN())
+        emit(SAVE_A("0"))
+        emit(BP_TO_SP())
+        emit(POP_BP())
+        emit(RETURN())
     }
 }
 
@@ -50,5 +50,5 @@ private fun translateExpression(expression: Expression, translationContext: Tran
 }
 
 private fun translateIntExpression(intExpression: IntExpression, translationContext: TranslationContext) {
-    translationContext.emit(Inst.PUSH_CONST(intExpression.value.toString()))
+    translationContext.emit(PUSH_CONST(intExpression.value.toString()))
 }

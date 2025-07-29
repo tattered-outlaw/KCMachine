@@ -54,7 +54,7 @@ class ExecutionEngine(ramSize: Int) {
             SAVE_A -> SAVE_A(operand)
             CALL -> CALL(operand)
             RETURN -> RETURN()
-            else -> throw ExecutionException("Unrecognized opcode $opcode.")
+            else -> throw ExecuteException("Unrecognized opcode $opcode.")
         }
     }
 

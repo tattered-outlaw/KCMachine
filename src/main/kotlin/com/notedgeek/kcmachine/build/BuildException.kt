@@ -1,3 +1,5 @@
 package com.notedgeek.kcmachine.build
 
-open class BuildException(message: String?) : RuntimeException(message)
+import com.notedgeek.kcmachine.KMachineException
+
+open class BuildException(message: String) : KMachineException(message)

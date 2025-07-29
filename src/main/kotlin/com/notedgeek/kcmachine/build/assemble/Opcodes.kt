@@ -1,15 +1,17 @@
 package com.notedgeek.kcmachine.build.assemble
 
-val opCodesMap = mapOf(
-    "HALT" to 0,
-    "PUSH_CONST" to 1,
-    "LBP" to 2,
-    "LSP" to 3,
-    "PUSH_BP" to 4,
-    "POP_BP" to 5,
-    "SP_TO_BP" to 6,
-    "BP_TO_SP" to 7,
-    "SAVE_A" to 8,
-    "CALL" to 9,
-    "RETURN" to 10
+val opcodeList = listOf (
+    "HALT",
+    "PUSH_CONST",
+    "LBP",
+    "LSP",
+    "PUSH_BP",
+    "POP_BP",
+    "SP_TO_BP",
+    "BP_TO_SP",
+    "SAVE_A",
+    "CALL",
+    "RETURN"
 )
+
+val opcodeMap = opcodeList.mapIndexed { index, opcode -> (opcode to index) }.toMap()

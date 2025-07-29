@@ -42,13 +42,28 @@ private fun translateReturnStatement(returnStatement: ReturnStatement, translati
     }
 }
 
-private fun translateExpression(expression: Expression, translationContext: TranslationContext) {
-    when (expression) {
-        is IntExpression -> translateIntExpression(expression, translationContext)
+private fun translateExpression(expr: Expression, translationContext: TranslationContext) {
+    when (expr) {
+        is IntExpression -> translateIntExpression(expr, translationContext)
+        is BinaryOperatorExpression -> translateBinaryOperatorInstruction(expr, translationContext)
         else -> TODO()
     }
 }
 
-private fun translateIntExpression(intExpression: IntExpression, translationContext: TranslationContext) {
-    translationContext.emit(PUSH_CONST(intExpression.value.toString()))
+private val binaryOperationInstructionMap = mapOf(
+    "+" to ADD(),
+    "-" to SUB(),
+    "*" to MUL(),
+    "/" to DIV()
+)
+
+private fun translateBinaryOperatorInstruction(expr: BinaryOperatorExpression, translationContext: TranslationContext) {
+    val instruction = binaryOperationInstructionMap[expr.operator] ?: throw TranslateException("Unknown operator ${expr.operator}.")
+    translateExpression(expr.left, translationContext)
+    translateExpression(expr.right, translationContext)
+    translationContext.emit(instruction)
+}
+
+private fun translateIntExpression(expr: IntExpression, translationContext: TranslationContext) {
+    translationContext.emit(PUSH_CONST(expr.value.toString()))
 }

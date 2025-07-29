@@ -13,15 +13,15 @@ fun firstPass(lines: List<String>, externalValues: Map<String, Int>): Map<String
     lines.forEachIndexed { index, line ->
         val words = line.split(spaceRegex)
         val firstWord = words[0]
-        if (opcodeMap.containsKey(firstWord)) {
-            address++
-        } else if (firstWord.endsWith(':')) {
+        if (firstWord.endsWith(':')) {
             val label = firstWord.substring(0, firstWord.length - 1)
             if(result.containsKey(label)) {
                 throw AssembleException("Duplicate label '$label' on line ${index + 1}.")
             } else {
                 result[label] = address
             }
+        } else {
+            opcodeMap[firstWord]?.let { _ -> address++ } ?: throw AssembleException("Unknown opcode: $firstWord.")
         }
     }
     return result

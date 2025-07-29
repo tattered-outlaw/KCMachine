@@ -8,7 +8,7 @@ private val patternMap = mapOf(
     "[0-9]+" to ::DecimalIntegralLiteral
 )
 
-private val symbolList = listOf("\\(", "\\)", "\\{", "\\}", ";")
+private val symbolList = listOf("\\(", "\\)", "\\{", "\\}", "\\+", "-", "\\*", "/", ";")
 
 private val tokenSpecs = sequence {
     yieldAll(patternMap.entries.map(::TokenSpec))

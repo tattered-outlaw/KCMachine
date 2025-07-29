@@ -1,6 +1,7 @@
 package com.notedgeek.kcmachine.execute
 
 import com.notedgeek.kcmachine.build.assemble.opcodeList
+import kotlin.math.abs
 
 private const val MASK = (1L shl 32) - 1
 
@@ -15,6 +16,10 @@ private const val BP_TO_SP = 7
 private const val SAVE_A = 8
 private const val CALL = 9
 private const val RETURN = 10
+private const val ADD = 11
+private const val SUB = 12
+private const val MUL = 13
+private const val DIV = 14
 
 fun execute(code: List<Long>, ramSize: Int) = ExecutionEngine(ramSize).executeCode(code)
 
@@ -41,7 +46,23 @@ class ExecutionEngine(ramSize: Int) {
         val instruction = ram[ip++]
         val operand = (instruction and MASK).toInt()
         val opcode = (instruction shr 32).toInt()
-        if(debug) println("${opcodeList[opcode]} $operand")
+        if(debug) {
+            println("ip:${ip -1} sp:$sp stack size:${ram.size - sp - 1} bp:$bp")
+            val maxStack = 150
+            if(sp != 0 && abs(ram.size - sp) > maxStack) {
+                throw ExecuteException("Max stack!")
+            }
+            if(sp != 0) {
+                val stackDisplay = ArrayList<Long>()
+                for (si in sp + 1..<ram.size) {
+                    stackDisplay.add(ram[si])
+                }
+                println(stackDisplay.joinToString(" "))
+            } else {
+                println("zero stack")
+            }
+            println("${opcodeList[opcode]} $operand")
+        }
         when (opcode) {
             HALT -> HALT()
             PUSH_CONST -> PUSH_CONST(operand)
@@ -54,6 +75,10 @@ class ExecutionEngine(ramSize: Int) {
             SAVE_A -> SAVE_A(operand)
             CALL -> CALL(operand)
             RETURN -> RETURN()
+            ADD -> ADD()
+            SUB -> SUB()
+            MUL -> MUL()
+            DIV -> DIV()
             else -> throw ExecuteException("Unrecognized opcode $opcode.")
         }
     }
@@ -102,4 +127,29 @@ class ExecutionEngine(ramSize: Int) {
     private fun RETURN() {
         ip = ram[++sp].toInt()
     }
+
+    private fun ADD() {
+        val rhs = ram[++sp]
+        val lhs = ram[++sp]
+        ram[sp--] = lhs + rhs
+    }
+
+    private fun SUB() {
+        val rhs = ram[++sp]
+        val lhs = ram[++sp]
+        ram[sp--] = lhs - rhs
+    }
+
+    private fun MUL() {
+        val rhs = ram[++sp]
+        val lhs = ram[++sp]
+        ram[sp--] = lhs * rhs
+    }
+
+    private fun DIV() {
+        val rhs = ram[++sp]
+        val lhs = ram[++sp]
+        ram[sp--] = lhs / rhs
+    }
+
 }

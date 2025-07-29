@@ -74,8 +74,13 @@ private fun analyzeReturnStatement(cgReturnStatement: CGReturnStatement): Return
 private fun analyzeExpression(cgExpression: CGExpression): Expression {
     return when (cgExpression) {
         is CGIntegerConstant -> analyzeIntExpression(cgExpression)
+        is CGBinaryOperationExpression -> analyzeBinaryOperatorExpression(cgExpression)
         else -> TODO()
     }
+}
+
+private fun analyzeBinaryOperatorExpression(expr: CGBinaryOperationExpression): BinaryOperatorExpression {
+    return BinaryOperatorExpression(expr.start, expr.end, analyzeExpression(expr.left), expr.operator, analyzeExpression(expr.right))
 }
 
 private fun analyzeIntExpression(cgIntegerConstant: CGIntegerConstant): IntExpression {

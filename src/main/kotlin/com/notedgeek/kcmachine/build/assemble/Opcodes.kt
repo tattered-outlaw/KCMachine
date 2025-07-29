@@ -11,7 +11,11 @@ val opcodeList = listOf (
     "BP_TO_SP",
     "SAVE_A",
     "CALL",
-    "RETURN"
+    "RETURN",
+    "ADD",
+    "SUB",
+    "MUL",
+    "DIV"
 )
 
 val opcodeMap = opcodeList.mapIndexed { index, opcode -> (opcode to index) }.toMap()

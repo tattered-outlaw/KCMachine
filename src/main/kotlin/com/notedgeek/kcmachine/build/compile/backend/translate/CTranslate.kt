@@ -46,6 +46,7 @@ private fun translateExpression(expr: Expression, translationContext: Translatio
     when (expr) {
         is IntExpression -> translateIntExpression(expr, translationContext)
         is BinaryOperatorExpression -> translateBinaryOperatorInstruction(expr, translationContext)
+        is FunctionCallExpression -> translateFunctionCallExpression(expr, translationContext)
         else -> TODO()
     }
 }
@@ -62,6 +63,13 @@ private fun translateBinaryOperatorInstruction(expr: BinaryOperatorExpression, t
     translateExpression(expr.left, translationContext)
     translateExpression(expr.right, translationContext)
     translationContext.emit(instruction)
+}
+
+private fun translateFunctionCallExpression(functionCallExpression: FunctionCallExpression, translationContext: TranslationContext) {
+    with(translationContext) {
+        emit(PUSH_CONST("0"))
+        emit(CALL(functionCallExpression.name))
+    }
 }
 
 private fun translateIntExpression(expr: IntExpression, translationContext: TranslationContext) {

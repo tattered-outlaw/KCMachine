@@ -40,8 +40,7 @@ fun parseDirectDeclarator(tokenBuffer: TokenBuffer): CGDeclarator {
     if (token !is Identifier) {
         TODO()
     }
-    tokenBuffer.consume()
-    val directDeclarator = CGIdentifierDeclarator(start, tokenBuffer.index, token.lexeme)
+    val directDeclarator = CGIdentifierDeclarator(start, tokenBuffer.index, parseIdentifierExpression(tokenBuffer))
     tokenBuffer.consume("(")
     tokenBuffer.consume(")")
     return CGEmptyFunctionDeclarator(start, tokenBuffer.index, directDeclarator)

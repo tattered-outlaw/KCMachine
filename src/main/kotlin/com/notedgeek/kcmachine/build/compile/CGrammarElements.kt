@@ -28,7 +28,7 @@ interface CGDeclarator : CGElement
 
 interface CGDirectDeclarator : CGDeclarator
 
-data class CGIdentifierDeclarator(override var start: Int, override var end: Int, val identifier: String) : CGDirectDeclarator
+data class CGIdentifierDeclarator(override var start: Int, override var end: Int, val identifier: CGIdentifierExpression) : CGDirectDeclarator
 
 interface CGFunctionDeclarator : CGDirectDeclarator
 
@@ -55,7 +55,18 @@ class CGBinaryOperationExpression(
     val right: CGExpression
 ) : CGExpression
 
+interface CGPostfixExpression : CGExpression
+
+data class CGFunctionCallExpression(
+    override var start: Int,
+    override var end: Int,
+    val expression: CGExpression,
+    val arguments: List<CGExpression>
+) : CGPostfixExpression
+
 interface CGPrimaryExpression : CGExpression
+
+data class CGIdentifierExpression(override var start: Int, override var end: Int, val value: String) : CGExpression
 
 interface CGConstantExpression : CGPrimaryExpression
 

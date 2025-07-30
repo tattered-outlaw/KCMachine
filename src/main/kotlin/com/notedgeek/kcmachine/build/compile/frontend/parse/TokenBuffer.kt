@@ -17,9 +17,10 @@ class TokenBuffer(private val tokens: List<Token>) {
         return tokens[index].lexeme
     }
 
-    fun consume() {
-        ensureHasNextToken()
+    fun consume(): String {
+        val result= nextLexeme()
         index++
+        return result
     }
 
     fun consume(expectedLexeme: String) {

@@ -1,18 +1,34 @@
 package com.notedgeek.kcmachine.build.compile.frontend.parse
 
-import com.notedgeek.kcmachine.build.compile.CGBinaryOperationExpression
-import com.notedgeek.kcmachine.build.compile.CGExpression
-import com.notedgeek.kcmachine.build.compile.CGIntegerConstant
+import com.notedgeek.kcmachine.build.compile.*
+import com.notedgeek.kcmachine.build.compile.frontend.Identifier
 import com.notedgeek.kcmachine.build.compile.frontend.IntegralLiteral
 import com.notedgeek.kcmachine.build.compile.frontend.Symbol
 
 private val binaryExpressionParserStack = listOf(
     listOf("*", "/"),
     listOf("+", "-")
-).fold(::parsePrimaryExpression, ::addParserToStack)
+).fold(::parsePostfixExpression, ::addParserToStack)
 
 fun parseExpression(tokenBuffer: TokenBuffer): CGExpression {
     return binaryExpressionParserStack.invoke(tokenBuffer)
+}
+
+fun parsePostfixExpression(tokenBuffer: TokenBuffer): CGExpression {
+    val start = tokenBuffer.index
+    var expr = parsePrimaryExpression(tokenBuffer)
+    while(true) {
+        val lexeme = tokenBuffer.nextLexeme()
+        when(lexeme) {
+            "(" -> {
+                tokenBuffer.consume()
+                tokenBuffer.consume(")")
+                expr = CGFunctionCallExpression(start, tokenBuffer.index, expr, emptyList())
+            }
+            else -> break
+        }
+    }
+    return expr
 }
 
 fun parsePrimaryExpression(tokenBuffer: TokenBuffer) = when (val token = tokenBuffer.nextToken()) {
@@ -24,8 +40,15 @@ fun parsePrimaryExpression(tokenBuffer: TokenBuffer) = when (val token = tokenBu
             throw ParseException("Unexpected symbol token ${token.lexeme}")
         }
     }
+    is Identifier -> parseIdentifierExpression(tokenBuffer)
 
     else -> TODO()
+}
+
+fun parseIdentifierExpression(tokenBuffer: TokenBuffer): CGIdentifierExpression {
+    val start = tokenBuffer.index
+    val identifier = tokenBuffer.consume()
+    return CGIdentifierExpression(start, tokenBuffer.index, identifier)
 }
 
 fun parseIntegerConstant(tokenBuffer: TokenBuffer): CGIntegerConstant {
@@ -41,24 +64,24 @@ fun parseIntegerConstant(tokenBuffer: TokenBuffer): CGIntegerConstant {
 fun parseBracketedExpression(tokenBuffer: TokenBuffer): CGExpression {
     val start = tokenBuffer.index
     tokenBuffer.consume("(")
-    val expression = parseExpression(tokenBuffer)
+    val expr = parseExpression(tokenBuffer)
     tokenBuffer.consume(")")
-    expression.start = start
-    expression.end = tokenBuffer.index
-    return expression
+    expr.start = start
+    expr.end = tokenBuffer.index
+    return expr
 }
 
 private fun addParserToStack(previousTopParser: (TokenBuffer) -> CGExpression, operators: List<String>): (TokenBuffer) -> CGExpression {
     return fun(tokenBuffer: TokenBuffer): CGExpression {
-        var expression = previousTopParser.invoke(tokenBuffer)
+        var expr = previousTopParser.invoke(tokenBuffer)
         var nextLexeme = tokenBuffer.nextLexeme()
         while (operators.contains(nextLexeme)) {
             tokenBuffer.consume()
             val rhs = previousTopParser.invoke(tokenBuffer)
-            expression = CGBinaryOperationExpression(expression.start, tokenBuffer.index, expression, nextLexeme, rhs)
+            expr = CGBinaryOperationExpression(expr.start, tokenBuffer.index, expr, nextLexeme, rhs)
             nextLexeme = tokenBuffer.nextLexeme()
         }
-        return expression
+        return expr
     }
 }
 

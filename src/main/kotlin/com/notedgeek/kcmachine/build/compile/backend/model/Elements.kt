@@ -52,6 +52,6 @@ data class IntExpression(override val start: Int, override val end: Int, val val
     override val type = IntType
 }
 
-data class QualifiedType(var type: Type)
+data class NameAndType(val name: String, val type: Type)
 
-data class NameAndType(var type: QualifiedType)
+data class QualifiedType(var type: Type)

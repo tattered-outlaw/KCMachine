@@ -24,31 +24,127 @@ data class CGCompoundStatement(override var start: Int, override var end: Int, v
 
 data class CGReturnStatement(override var start: Int, override var end: Int, val expression: CGExpression) : CGStatement
 
-interface CGDeclarator : CGElement
+sealed interface CGDeclarator : CGElement
 
-interface CGDirectDeclarator : CGDeclarator
+interface CGConcreteDeclarator : CGDeclarator
 
-data class CGIdentifierDeclarator(override var start: Int, override var end: Int, val identifier: CGIdentifierExpression) : CGDirectDeclarator
+data class CGPointerDeclarator(
+    override var start: Int,
+    override var end: Int,
+    val pointer: CGPointer,
+    val declarator: CGConcreteDeclarator
+) :
+    CGConcreteDeclarator
+
+interface CGDirectDeclarator : CGConcreteDeclarator
+
+data class CGIdentifierDeclarator(override var start: Int, override var end: Int, val identifier: CGIdentifierExpression) :
+    CGConcreteDeclarator
 
 interface CGFunctionDeclarator : CGDirectDeclarator
 
-data class CGEmptyFunctionDeclarator(override var start: Int, override var end: Int, val declarator: CGDeclarator) : CGFunctionDeclarator
+data class CGEmptyFunctionDeclarator(
+    override var start: Int,
+    override var end: Int,
+    val declarator: CGConcreteDeclarator
+) : CGFunctionDeclarator
 
-interface CGDeclarationSpecifier : CGElement
+data class CGParameterFunctionDeclarator(
+    override var start: Int,
+    override var end: Int,
+    val declarator: CGConcreteDeclarator,
+    val parameterTypeList: List<CSParameterDeclaration>
+) : CGFunctionDeclarator
 
-enum class CGType(val lexeme: String) {
-    INT("int")
+data class CGIdentifierFunctionDeclarator(
+    override var start: Int,
+    override var end: Int,
+    val declarator: CGConcreteDeclarator,
+    val parameterTypeList: List<CGIdentifierDeclarator>
+) : CGFunctionDeclarator
 
-    ;
+data class CGArrayDeclarator(
+    override var start: Int,
+    override var end: Int,
+    val declarator: CGConcreteDeclarator,
+    val parameterTypeList: CGConstantValueExpression? = null
+) : CGConcreteDeclarator
+
+
+interface CGAbstractDeclarator : CGDeclarator
+
+data class CGAbstractPointerDeclarator(
+    override var start: Int,
+    override var end: Int,
+    val pointer: CGPointer,
+    val declarator: CGAbstractDeclarator
+) :
+    CGAbstractDeclarator
+
+interface CGDirectAbstractDeclarator : CGAbstractDeclarator
+
+interface CGAbstractFunctionDeclarator : CGDirectAbstractDeclarator
+
+data class CGAbstractEmptyFunctionDeclarator(
+    override var start: Int,
+    override var end: Int,
+    val declarator: CGAbstractDeclarator
+) : CGAbstractFunctionDeclarator
+
+data class CGAbstractParameterFunctionDeclarator(
+    override var start: Int,
+    override var end: Int,
+    val declarator: CGAbstractDeclarator,
+    val parameterTypeList: List<CSAbstractParameterDeclaration>
+) : CGAbstractFunctionDeclarator
+
+data class CGAbstractArrayDeclarator(
+    override var start: Int,
+    override var end: Int,
+    val declarator: CGAbstractDeclarator,
+    val parameterTypeList: CGConstantValueExpression? = null
+) : CGAbstractDeclarator
+
+data class CGAbstractDeclaratorPlaceholder(override var start: Int, override var end: Int) : CGAbstractDeclarator
+
+
+data class CGPointer(override var start: Int, override var end: Int, val typeQualifiers: List<CGTypeQualifier>) : CGElement
+
+interface CGDeclarationSpecifier
+
+enum class CGTypeSpecifier(val lexeme: String) : CGDeclarationSpecifier {
+    INT("int");
 
     companion object {
         val lexemeMap = entries.associateBy { it.lexeme }
     }
 }
 
-data class CGTypeSpecifier(override var start: Int, override var end: Int, val type: CGType) : CGDeclarationSpecifier
+enum class CGTypeQualifier(val lexeme: String) : CGDeclarationSpecifier {
+    CONST("const"), VOLATILE("volatile");
+
+    companion object {
+        val lexemeMap = entries.associateBy { it.lexeme }
+    }
+}
+
+enum class CGStorageClassSpecifier(val lexeme: String) : CGDeclarationSpecifier {
+    STATIC("static");
+
+    companion object {
+        val lexemeMap = entries.associateBy { it.lexeme }
+    }
+}
+
+val declarationSpecifierMap = sequence {
+    yieldAll(CGTypeSpecifier.entries)
+    yieldAll(CGTypeQualifier.entries)
+    yieldAll(CGStorageClassSpecifier.entries)
+}.toList()
 
 interface CGExpression : CGElement
+
+class CGConstantValueExpression(override var start: Int, override var end: Int, val expression: CGExpression) : CGElement
 
 class CGBinaryOperationExpression(
     override var start: Int, override var end: Int, val left: CGExpression, val operator: String,
@@ -68,7 +164,21 @@ interface CGPrimaryExpression : CGExpression
 
 data class CGIdentifierExpression(override var start: Int, override var end: Int, val value: String) : CGExpression
 
-interface CGConstantExpression : CGPrimaryExpression
+interface CGConstantLiteralExpression : CGPrimaryExpression
 
-data class CGIntegerConstant(override var start: Int, override var end: Int, val value: Long) : CGConstantExpression
+data class CGIntegerConstant(override var start: Int, override var end: Int, val value: Long) : CGConstantLiteralExpression
 
+data class CSParameterDeclaration(
+    override var start: Int,
+    override var end: Int,
+    val declarationSpecifiers: List<CGDeclarationSpecifier>,
+    val declarator: CGConcreteDeclarator
+) : CGElement
+
+data class CSAbstractParameterDeclaration(
+    override var start: Int,
+    override var end: Int,
+    val declarationSpecifiers: List<CGDeclarationSpecifier>,
+    val declarator: CGAbstractDeclarator
+) :
+    CGElement

@@ -5,16 +5,15 @@ import com.notedgeek.kcmachine.build.compile.frontend.Token
 class TokenBuffer(private val tokens: List<Token>) {
 
     var index = 0
-        private set
 
     fun nextToken(): Token {
         ensureHasNextToken()
         return tokens[index]
     }
 
-    fun nextLexeme(): String {
-        ensureHasNextToken()
-        return tokens[index].lexeme
+    fun nextLexeme(lookahead: Int = 0): String {
+        ensureHasNextToken(lookahead)
+        return tokens[index + lookahead].lexeme
     }
 
     fun consume(): String {
@@ -31,10 +30,10 @@ class TokenBuffer(private val tokens: List<Token>) {
         }
     }
 
-    fun hasMoreTokens() = index < tokens.size
+    fun hasMoreTokens(lookahead: Int = 0) = index + lookahead < tokens.size
 
-    private fun ensureHasNextToken() {
-        if (!hasMoreTokens()) {
+    private fun ensureHasNextToken(lookahead: Int = 0) {
+        if (!hasMoreTokens(lookahead)) {
             throw ParseException("Tokens exhausted.")
         }
     }

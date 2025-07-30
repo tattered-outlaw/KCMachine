@@ -11,8 +11,16 @@ private val binaryExpressionParserStack = listOf(
 ).fold(::parsePostfixExpression, ::addParserToStack)
 
 fun parseExpression(tokenBuffer: TokenBuffer): CGExpression {
-    return binaryExpressionParserStack.invoke(tokenBuffer)
+    return parseConditionalExpression(tokenBuffer)
 }
+
+fun parseConstantExpression(tokenBuffer: TokenBuffer): CGConstantValueExpression {
+    val start = tokenBuffer.index
+    val expression = parseConditionalExpression(tokenBuffer)
+    return CGConstantValueExpression(start, tokenBuffer.index, expression)
+}
+
+fun parseConditionalExpression(tokenBuffer: TokenBuffer) = binaryExpressionParserStack.invoke(tokenBuffer)
 
 fun parsePostfixExpression(tokenBuffer: TokenBuffer): CGExpression {
     val start = tokenBuffer.index

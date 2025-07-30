@@ -19,7 +19,7 @@ fun analyzeC(cgCompilationUnit: CGCompilationUnit): CompilationUnit {
 
 private fun analyzeFunctionDefinition(cgFunctionDefinition: CGFunctionDefinition): FunctionDefinition {
     if (cgFunctionDefinition.declarationSpecifiers.isEmpty()) {
-        throw AnalyzeException("Declaration specifiers lis t is empty.")
+        throw AnalyzeException("Declaration specifiers list is empty.")
     }
 
     val typeSpecifier = cgFunctionDefinition.declarationSpecifiers.first()
@@ -40,14 +40,14 @@ private fun analyzeFunctionDefinition(cgFunctionDefinition: CGFunctionDefinition
         TODO()
     }
 
-    val identifer = cgFunctionDefinition.declarator.declarator.identifier
+    val identifier = cgFunctionDefinition.declarator.declarator.identifier
 
     val compoundStatement = analyzeCompoundStatement(cgFunctionDefinition.compoundStatement)
 
     return FunctionDefinition(
         cgFunctionDefinition.start,
         cgFunctionDefinition.end,
-        identifer.value,
+        identifier.value,
         QualifiedType(IntType),
         emptyList(),
         compoundStatement

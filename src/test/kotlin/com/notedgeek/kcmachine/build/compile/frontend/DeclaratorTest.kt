@@ -5,7 +5,7 @@ import com.notedgeek.kcmachine.build.compile.backend.analyze.typeFromDeclarator
 import com.notedgeek.kcmachine.build.compile.backend.model.*
 import com.notedgeek.kcmachine.build.compile.frontend.grammar.CGAbstractDeclarator
 import com.notedgeek.kcmachine.build.compile.frontend.grammar.CGConcreteDeclarator
-import com.notedgeek.kcmachine.build.compile.frontend.parse.parseDeclaratorOfEitherType
+import com.notedgeek.kcmachine.build.compile.frontend.parse.parseDeclarator
 import com.notedgeek.kcmachine.build.compile.frontend.lex.lexC
 import com.notedgeek.kcmachine.build.compile.frontend.parse.TokenBuffer
 import org.junit.jupiter.api.Test
@@ -24,7 +24,7 @@ class DeclaratorTest {
     }
 
     private fun helper(source: String) {
-        val declarator = parseDeclaratorOfEitherType(TokenBuffer(lexC("$source;")))
+        val declarator = parseDeclarator(TokenBuffer(lexC("$source;")))
         var name: String
         var type: Type? = null
         var nameAndType: NameAndType? = null

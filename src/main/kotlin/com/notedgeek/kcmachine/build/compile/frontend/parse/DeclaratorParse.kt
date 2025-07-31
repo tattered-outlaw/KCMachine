@@ -3,21 +3,21 @@ package com.notedgeek.kcmachine.build.compile.frontend.parse
 import com.notedgeek.kcmachine.build.compile.frontend.Identifier
 import com.notedgeek.kcmachine.build.compile.frontend.grammar.*
 
-fun parseDeclaratorOfEitherType(tokenBuffer: TokenBuffer): CGDeclarator {
+fun parseDeclarator(tokenBuffer: TokenBuffer): CGDeclarator {
     val start = tokenBuffer.index
     try {
-        return parseDeclarator(tokenBuffer)
+        return parseConcreteDeclarator(tokenBuffer)
     } catch (e: ConcreteDeclaratorFailure) {
         tokenBuffer.index = start
         return parseAbstractDeclarator(tokenBuffer)
     }
 }
 
-fun parseDeclarator(tokenBuffer: TokenBuffer): CGConcreteDeclarator {
+fun parseConcreteDeclarator(tokenBuffer: TokenBuffer): CGConcreteDeclarator {
     val start = tokenBuffer.index
     return if (tokenBuffer.nextLexeme() == "*") {
         val pointer = parsePointer(tokenBuffer)
-        val declarator = parseDeclarator(tokenBuffer)
+        val declarator = parseConcreteDeclarator(tokenBuffer)
         CGPointerDeclarator(start, tokenBuffer.index, pointer, declarator)
     } else {
         parseDirectDeclarator(tokenBuffer)
@@ -31,7 +31,7 @@ fun parseDirectDeclarator(tokenBuffer: TokenBuffer): CGConcreteDeclarator {
         declarator = CGIdentifierDeclarator(start, tokenBuffer.index, parseIdentifierExpression(tokenBuffer))
     } else if (tokenBuffer.nextLexeme() == "(") {
         tokenBuffer.consume("(")
-        declarator = parseDeclarator(tokenBuffer)
+        declarator = parseConcreteDeclarator(tokenBuffer)
         tokenBuffer.consume(")")
     } else {
         throw ConcreteDeclaratorFailure()

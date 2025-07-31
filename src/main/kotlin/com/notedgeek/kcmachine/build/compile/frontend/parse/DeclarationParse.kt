@@ -55,6 +55,6 @@ fun parseDeclarationSpecifiers(tokenBuffer: TokenBuffer): List<CGDeclarationSpec
 private fun parseExternalDeclarationHead(tokenBuffer: TokenBuffer): ExternalDeclarationHead {
     val start = tokenBuffer.index
     val declarationSpecifiers = parseDeclarationSpecifiers(tokenBuffer)
-    val declarator = parseDeclarator(tokenBuffer)
+    val declarator = parseConcreteDeclarator(tokenBuffer)
     return ExternalDeclarationHead(start, tokenBuffer.index, declarationSpecifiers, declarator)
 }

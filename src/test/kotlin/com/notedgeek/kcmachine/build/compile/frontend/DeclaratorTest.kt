@@ -1,7 +1,7 @@
 package com.notedgeek.kcmachine.build.compile.frontend
 
 import com.notedgeek.kcmachine.build.compile.backend.analyze.nameAndTypeFromDeclarator
-import com.notedgeek.kcmachine.build.compile.backend.analyze.typeFromDeclarator
+import com.notedgeek.kcmachine.build.compile.backend.analyze.typeFromAbstractDeclarator
 import com.notedgeek.kcmachine.build.compile.backend.model.*
 import com.notedgeek.kcmachine.build.compile.frontend.grammar.CGAbstractDeclarator
 import com.notedgeek.kcmachine.build.compile.frontend.grammar.CGConcreteDeclarator
@@ -20,17 +20,17 @@ class DeclaratorTest {
             "a[]()", "[]()",
             "**a[]()", "**[]()",
             "(**a)[]()", "(**)[]()",
-        ).forEach(::helper)
+        ).forEach(::process)
     }
 
-    private fun helper(source: String) {
+    private fun process(source: String) {
         val declarator = parseDeclarator(TokenBuffer(lexC("$source;")))
-        var name: String
+        val name: String
         var type: Type? = null
         var nameAndType: NameAndType? = null
         when (declarator) {
-            is CGConcreteDeclarator -> nameAndType = nameAndTypeFromDeclarator(declarator)
-            is CGAbstractDeclarator -> type = typeFromDeclarator(declarator)
+            is CGConcreteDeclarator -> nameAndType = nameAndTypeFromDeclarator(declarator, IntType)
+            is CGAbstractDeclarator -> type = typeFromAbstractDeclarator(declarator, IntType)
         }
 
         type = nameAndType?.type ?: type
@@ -42,7 +42,6 @@ class DeclaratorTest {
                 is PointerType -> "p"
                 is FunctionType -> "f"
                 is ArrayType -> "a"
-                else -> throw RuntimeException("Unexpected type $type")
             }
             type = type.wrappedType
         }

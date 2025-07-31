@@ -8,6 +8,7 @@ fun analyzeExpression(cgExpression: CGExpression): Expression {
         is CGIntegerConstant -> analyzeIntExpression(cgExpression)
         is CGBinaryOperationExpression -> analyzeBinaryOperatorExpression(cgExpression)
         is CGFunctionCallExpression -> analyzeFunctionCallExpression(cgExpression)
+        is CGIdentifierExpression -> analyzeIdentierExpression(cgExpression)
         else -> TODO()
     }
 }
@@ -23,6 +24,10 @@ private fun analyzeFunctionCallExpression(expr: CGFunctionCallExpression): Funct
     return FunctionCallExpression(expr.start, expr.end, IntType, expr.expression.value, expr.arguments.map { analyzeExpression(it) })
 }
 
-private fun analyzeIntExpression(cgIntegerConstant: CGIntegerConstant): IntExpression {
-    return IntExpression(cgIntegerConstant.start, cgIntegerConstant.end, cgIntegerConstant.value)
+private fun analyzeIntExpression(expr: CGIntegerConstant): IntExpression {
+    return IntExpression(expr.start, expr.end, expr.value)
+}
+
+private fun analyzeIdentierExpression(expr: CGIdentifierExpression): IdentifierExpression {
+    return IdentifierExpression(expr.start, expr.end, expr.value)
 }

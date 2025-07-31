@@ -36,23 +36,15 @@ enum class CGStorageClassSpecifier(val lexeme: String) : CGDeclarationSpecifier 
     }
 }
 
-val declarationSpecifierMap = sequence {
-    yieldAll(CGTypeSpecifier.entries)
-    yieldAll(CGTypeQualifier.entries)
-    yieldAll(CGStorageClassSpecifier.entries)
-}.toList()
+val declarationSpecifierLexemeMap = sequence {
+    yieldAll(CGTypeSpecifier.lexemeMap.entries)
+    yieldAll(CGTypeQualifier.lexemeMap.entries)
+    yieldAll(CGStorageClassSpecifier.lexemeMap.entries)
+}.map { it.key to it.value }.toMap()
 
-data class CSParameterDeclaration(
+data class CGParameterDeclaration(
     override var start: Int,
     override var end: Int,
     val declarationSpecifiers: List<CGDeclarationSpecifier>,
-    val declarator: CGConcreteDeclarator
+    val declarator: CGDeclarator
 ) : CGElement
-
-data class CSAbstractParameterDeclaration(
-    override var start: Int,
-    override var end: Int,
-    val declarationSpecifiers: List<CGDeclarationSpecifier>,
-    val declarator: CGAbstractDeclarator
-) :
-    CGElement

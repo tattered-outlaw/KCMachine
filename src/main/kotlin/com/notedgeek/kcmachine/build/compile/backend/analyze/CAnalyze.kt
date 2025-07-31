@@ -32,15 +32,32 @@ private fun analyzeFunctionDefinition(cgFunctionDefinition: CGFunctionDefinition
         TODO()
     }
 
-    if (cgFunctionDefinition.declarator !is CGEmptyFunctionDeclarator) {
+    if (cgFunctionDefinition.declarator !is CGFunctionDeclarator) {
         TODO()
     }
 
-    if (cgFunctionDefinition.declarator.declarator !is CGIdentifierDeclarator) {
+    val lhsDeclarator = cgFunctionDefinition.declarator.declarator
+
+    if (lhsDeclarator !is CGIdentifierDeclarator) {
         TODO()
     }
 
-    val identifier = cgFunctionDefinition.declarator.declarator.identifier
+    val identifier = lhsDeclarator.identifier
+
+    val parameters = ArrayList<NameAndType>()
+
+    if (cgFunctionDefinition.declarator is CGParameterFunctionDeclarator) {
+        parameters.addAll(cgFunctionDefinition.declarator.parameterTypeList.map {
+            val parameterDeclarator = it.declarator
+            if(parameterDeclarator !is CGConcreteDeclarator) {
+                throw AnalyzeException("Unexpected abstract declarator for parameter: $it")
+            }
+            nameAndTypeFromDeclarator(
+                parameterDeclarator,
+                typeFromDeclarationSpecifiers(it.declarationSpecifiers)
+            )
+        })
+    }
 
     val compoundStatement = analyzeCompoundStatement(cgFunctionDefinition.compoundStatement)
 
@@ -49,10 +66,18 @@ private fun analyzeFunctionDefinition(cgFunctionDefinition: CGFunctionDefinition
         cgFunctionDefinition.end,
         identifier.value,
         QualifiedType(IntType),
-        emptyList(),
+        parameters,
         compoundStatement
     )
+
 }
 
+fun qualifiedTypeFromDeclarationSpecifiers(declarationSpecifiers: List<CGDeclarationSpecifier>): QualifiedType {
+    return QualifiedType(IntType)
+}
+
+fun typeFromDeclarationSpecifiers(declarationSpecifiers: List<CGDeclarationSpecifier>): Type {
+    return IntType
+}
 
 

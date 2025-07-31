@@ -30,15 +30,23 @@ fun parsePostfixExpression(tokenBuffer: TokenBuffer): CGExpression {
         when(lexeme) {
             "(" -> {
                 tokenBuffer.consume()
+                val arguments = ArrayList<CGExpression>()
+                while(tokenBuffer.nextLexeme() != ")") {
+                    arguments.add(parseExpression(tokenBuffer))
+                    if (tokenBuffer.nextLexeme() == ",") {
+                        tokenBuffer.consume()
+                    } else {
+                        break
+                    }
+                }
                 tokenBuffer.consume(")")
-                expr = CGFunctionCallExpression(start, tokenBuffer.index, expr, emptyList())
+                expr = CGFunctionCallExpression(start, tokenBuffer.index, expr, arguments)
             }
             else -> break
         }
     }
     return expr
 }
-
 fun parsePrimaryExpression(tokenBuffer: TokenBuffer) = when (val token = tokenBuffer.nextToken()) {
     is IntegralLiteral -> parseIntegerConstant(tokenBuffer)
     is Symbol -> {

@@ -1,6 +1,6 @@
 package com.notedgeek.kcmachine.build.compile.frontend.grammar
 
-interface CGDeclarator : CGElement
+sealed interface CGDeclarator : CGElement
 
 interface CGConcreteDeclarator : CGDeclarator
 
@@ -9,33 +9,34 @@ data class CGPointerDeclarator(
     override var end: Int,
     val pointer: CGPointer,
     val declarator: CGConcreteDeclarator
-) :
-    CGConcreteDeclarator
+) : CGConcreteDeclarator
 
 interface CGDirectDeclarator : CGConcreteDeclarator
 
 data class CGIdentifierDeclarator(override var start: Int, override var end: Int, val identifier: CGIdentifierExpression) :
     CGConcreteDeclarator
 
-interface CGFunctionDeclarator : CGDirectDeclarator
+interface CGFunctionDeclarator : CGDirectDeclarator {
+    val declarator: CGConcreteDeclarator
+}
 
 data class CGEmptyFunctionDeclarator(
     override var start: Int,
     override var end: Int,
-    val declarator: CGConcreteDeclarator
+    override val declarator: CGConcreteDeclarator
 ) : CGFunctionDeclarator
 
 data class CGParameterFunctionDeclarator(
     override var start: Int,
     override var end: Int,
-    val declarator: CGConcreteDeclarator,
-    val parameterTypeList: List<CSParameterDeclaration>
+    override val declarator: CGConcreteDeclarator,
+    val parameterTypeList: List<CGParameterDeclaration>
 ) : CGFunctionDeclarator
 
 data class CGIdentifierFunctionDeclarator(
     override var start: Int,
     override var end: Int,
-    val declarator: CGConcreteDeclarator,
+    override val declarator: CGConcreteDeclarator,
     val parameterTypeList: List<CGIdentifierDeclarator>
 ) : CGFunctionDeclarator
 
@@ -58,19 +59,21 @@ data class CGAbstractPointerDeclarator(
 
 interface CGDirectAbstractDeclarator : CGAbstractDeclarator
 
-interface CGAbstractFunctionDeclarator : CGDirectAbstractDeclarator
+interface CGAbstractFunctionDeclarator : CGDirectAbstractDeclarator {
+    val declarator: CGAbstractDeclarator
+}
 
 data class CGAbstractEmptyFunctionDeclarator(
     override var start: Int,
     override var end: Int,
-    val declarator: CGAbstractDeclarator
+    override val declarator: CGAbstractDeclarator
 ) : CGAbstractFunctionDeclarator
 
 data class CGAbstractParameterFunctionDeclarator(
     override var start: Int,
     override var end: Int,
-    val declarator: CGAbstractDeclarator,
-    val parameterTypeList: List<CSAbstractParameterDeclaration>
+    override val declarator: CGAbstractDeclarator,
+    val parameterTypeList: List<CGParameterDeclaration>
 ) : CGAbstractFunctionDeclarator
 
 data class CGAbstractArrayDeclarator(
@@ -81,6 +84,5 @@ data class CGAbstractArrayDeclarator(
 ) : CGAbstractDeclarator
 
 data class CGAbstractDeclaratorPlaceholder(override var start: Int, override var end: Int) : CGAbstractDeclarator
-
 
 data class CGPointer(override var start: Int, override var end: Int, val typeQualifiers: List<CGTypeQualifier>) : CGElement

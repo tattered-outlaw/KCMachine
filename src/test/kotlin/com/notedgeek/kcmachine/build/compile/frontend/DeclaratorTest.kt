@@ -5,9 +5,9 @@ import com.notedgeek.kcmachine.build.compile.backend.analyze.typeFromAbstractDec
 import com.notedgeek.kcmachine.build.compile.backend.model.*
 import com.notedgeek.kcmachine.build.compile.frontend.grammar.CGAbstractDeclarator
 import com.notedgeek.kcmachine.build.compile.frontend.grammar.CGConcreteDeclarator
-import com.notedgeek.kcmachine.build.compile.frontend.parse.parseDeclarator
 import com.notedgeek.kcmachine.build.compile.frontend.lex.lexC
 import com.notedgeek.kcmachine.build.compile.frontend.parse.TokenBuffer
+import com.notedgeek.kcmachine.build.compile.frontend.parse.parseDeclarator
 import org.junit.jupiter.api.Test
 
 class DeclaratorTest {
@@ -20,6 +20,13 @@ class DeclaratorTest {
             "a[]()", "[]()",
             "**a[]()", "**[]()",
             "(**a)[]()", "(**)[]()",
+        ).forEach(::process)
+    }
+
+    @Test
+    fun testNestedDeclarator() {
+        listOf(
+            "a (int *(), int b)"
         ).forEach(::process)
     }
 

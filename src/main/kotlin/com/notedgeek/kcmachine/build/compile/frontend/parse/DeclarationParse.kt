@@ -4,7 +4,7 @@ import com.notedgeek.kcmachine.build.compile.frontend.grammar.*
 
 // used initially to collect parsed tokens while trying to discriminate between
 // function_definition and declaration
-private data class ExternalDeclarationHead(
+private data class DeclarationHead(
     val start: Int,
     val end: Int,
     val declarationSpecifiers: List<CGDeclarationSpecifier>,
@@ -13,20 +13,29 @@ private data class ExternalDeclarationHead(
 
 fun parseExternalDeclaration(tokenBuffer: TokenBuffer): CGExternalDeclaration {
     val start = tokenBuffer.index
-    val externalDeclarationHead = parseExternalDeclarationHead(tokenBuffer)
-    val declarator = externalDeclarationHead.declarator
+    val declarationHead = parseExternalDeclarationHead(tokenBuffer)
+    val declarator = declarationHead.declarator
     if (tokenBuffer.nextLexeme() == "{" && declarator is CGFunctionDeclarator) {
-        val compoundStatement = parseCompoundStatement(tokenBuffer)
-        return CGFunctionDefinition(
-            start,
-            tokenBuffer.index,
-            externalDeclarationHead.declarationSpecifiers,
-            declarator,
-            compoundStatement
-        )
+        return parseFunctionDefinition(tokenBuffer, start, declarationHead.declarationSpecifiers, declarator)
     } else {
         TODO()
     }
+}
+
+fun parseFunctionDefinition(
+    tokenBuffer: TokenBuffer,
+    start: Int,
+    declarationSpecifiers: List<CGDeclarationSpecifier>,
+    declarator: CGFunctionDeclarator
+): CGFunctionDefinition {
+    val compoundStatement = parseCompoundStatement(tokenBuffer)
+    return CGFunctionDefinition(
+        start,
+        tokenBuffer.index,
+        declarationSpecifiers,
+        declarator,
+        compoundStatement
+    )
 }
 
 
@@ -52,9 +61,15 @@ fun parseDeclarationSpecifiers(tokenBuffer: TokenBuffer): List<CGDeclarationSpec
     }
 }.toList()
 
-private fun parseExternalDeclarationHead(tokenBuffer: TokenBuffer): ExternalDeclarationHead {
+fun parseParameterDeclaration(tokenBuffer: TokenBuffer): CGParameterDeclaration {
+    val start = tokenBuffer.index
+    val declarationSpecifiers = parseDeclarationSpecifiers(tokenBuffer)
+    val declarator = parseDeclarator(tokenBuffer)
+    return CGParameterDeclaration(start, tokenBuffer.index, declarationSpecifiers, declarator)
+}
+private fun parseExternalDeclarationHead(tokenBuffer: TokenBuffer): DeclarationHead {
     val start = tokenBuffer.index
     val declarationSpecifiers = parseDeclarationSpecifiers(tokenBuffer)
     val declarator = parseConcreteDeclarator(tokenBuffer)
-    return ExternalDeclarationHead(start, tokenBuffer.index, declarationSpecifiers, declarator)
+    return DeclarationHead(start, tokenBuffer.index, declarationSpecifiers, declarator)
 }

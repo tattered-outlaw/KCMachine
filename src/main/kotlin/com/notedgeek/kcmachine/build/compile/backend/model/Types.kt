@@ -17,7 +17,7 @@ data class PointerType(override val wrappedType: Type) : WrapperType {
     val targetType = wrappedType
 }
 
-data class FunctionType(override val wrappedType: Type) : WrapperType {
+data class FunctionType(override val wrappedType: Type, val parameterTypes: List<Type> = emptyList() ) : WrapperType {
     override val size = wrappedType.size
     val returnType = wrappedType
 }
@@ -26,3 +26,8 @@ data class ArrayType(override val wrappedType: Type) : WrapperType {
     override val size = wrappedType.size
     val elementType = wrappedType
 }
+
+data class NameAndType(val name: String, val type: Type)
+data class QualifiedType(var type: Type)
+
+data class QualifiedNameAndType(val name: String, val type: QualifiedType)

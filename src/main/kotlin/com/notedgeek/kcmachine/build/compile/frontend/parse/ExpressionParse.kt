@@ -1,9 +1,9 @@
 package com.notedgeek.kcmachine.build.compile.frontend.parse
 
-import com.notedgeek.kcmachine.build.compile.*
 import com.notedgeek.kcmachine.build.compile.frontend.Identifier
 import com.notedgeek.kcmachine.build.compile.frontend.IntegralLiteral
 import com.notedgeek.kcmachine.build.compile.frontend.Symbol
+import com.notedgeek.kcmachine.build.compile.frontend.grammar.*
 
 private val binaryExpressionParserStack = listOf(
     listOf("*", "/"),

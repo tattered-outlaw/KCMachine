@@ -1,6 +1,6 @@
 package com.notedgeek.kcmachine.build.compile.frontend.parse
 
-import com.notedgeek.kcmachine.build.compile.CGCompilationUnit
+import com.notedgeek.kcmachine.build.compile.frontend.grammar.CGCompilationUnit
 import com.notedgeek.kcmachine.build.compile.frontend.lex.lexC
 
 fun parseC(source: String): CGCompilationUnit {

@@ -1,8 +1,8 @@
 package com.notedgeek.kcmachine.build.compile.frontend.parse
 
-import com.notedgeek.kcmachine.build.compile.CGCompoundStatement
-import com.notedgeek.kcmachine.build.compile.CGReturnStatement
-import com.notedgeek.kcmachine.build.compile.CGStatement
+import com.notedgeek.kcmachine.build.compile.frontend.grammar.CGCompoundStatement
+import com.notedgeek.kcmachine.build.compile.frontend.grammar.CGReturnStatement
+import com.notedgeek.kcmachine.build.compile.frontend.grammar.CGStatement
 
 fun parseStatement(tokenBuffer: TokenBuffer): CGStatement {
     val nextLexeme = tokenBuffer.nextLexeme()

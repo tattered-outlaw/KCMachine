@@ -1,12 +1,13 @@
 package com.notedgeek.kcmachine.build.compile.frontend
 
-import com.notedgeek.kcmachine.build.compile.*
 import com.notedgeek.kcmachine.build.compile.backend.analyze.nameAndTypeFromDeclarator
 import com.notedgeek.kcmachine.build.compile.backend.analyze.typeFromDeclarator
 import com.notedgeek.kcmachine.build.compile.backend.model.*
+import com.notedgeek.kcmachine.build.compile.frontend.grammar.CGAbstractDeclarator
+import com.notedgeek.kcmachine.build.compile.frontend.grammar.CGConcreteDeclarator
+import com.notedgeek.kcmachine.build.compile.frontend.parse.parseDeclaratorOfEitherType
 import com.notedgeek.kcmachine.build.compile.frontend.lex.lexC
 import com.notedgeek.kcmachine.build.compile.frontend.parse.TokenBuffer
-import com.notedgeek.kcmachine.build.compile.frontend.parse.parseDeclaratorOfEitherType
 import org.junit.jupiter.api.Test
 
 class DeclaratorTest {
@@ -47,7 +48,6 @@ class DeclaratorTest {
         }
         println("$source ${name.ifEmpty { "{abstract}" }} : $string")
     }
-
 
 
 }

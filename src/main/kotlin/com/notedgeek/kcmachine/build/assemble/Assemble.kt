@@ -57,6 +57,7 @@ fun secondPass(lines: List<String>, labels: Map<String, Int>): List<Long> {
             address++
         }
     }
+    labelsByAddress[address]?.let { println(it.joinToString()) }
     return result
 }
 

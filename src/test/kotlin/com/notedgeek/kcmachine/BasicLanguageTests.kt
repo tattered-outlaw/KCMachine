@@ -5,7 +5,7 @@ import kotlin.test.Test
 class BasicLanguageTests {
 
     @Test
-    fun `test run skeleton`() = runCodeForResult(
+    fun `run skeleton`() = runCodeForResult(
         """
             int main() { 
                 return 10; 
@@ -14,7 +14,7 @@ class BasicLanguageTests {
     )
 
     @Test
-    fun `test binary addition`() = runCodeForResult(
+    fun `binary addition`() = runCodeForResult(
         """
             int main() { 
                 return 1+2; 
@@ -23,7 +23,7 @@ class BasicLanguageTests {
     )
 
     @Test
-    fun `test binary subtraction positive`() = runCodeForResult(
+    fun `binary subtraction positive`() = runCodeForResult(
         """
             int main() { 
                 return 5 - 3; 
@@ -32,7 +32,7 @@ class BasicLanguageTests {
     )
 
     @Test
-    fun `test binary subtraction negative`() = runCodeForResult(
+    fun `binary subtraction negative`() = runCodeForResult(
         """
             int main() { 
                 return 3 - 5; 
@@ -41,7 +41,7 @@ class BasicLanguageTests {
     )
 
     @Test
-    fun `test associativity`() = runCodeForResult(
+    fun `associativity`() = runCodeForResult(
         """
             int main() { 
                 return 5 - 3 - 1; 
@@ -50,7 +50,7 @@ class BasicLanguageTests {
     )
 
     @Test
-    fun `test precedence`() = runCodeForResult(
+    fun `precedence`() = runCodeForResult(
         """
             int main() { 
                 return 1 + 2 * 3 + 4 / 2; 
@@ -59,7 +59,7 @@ class BasicLanguageTests {
     )
 
     @Test
-    fun `test bracketing`() = runCodeForResult(
+    fun `bracketing`() = runCodeForResult(
         """
             int main() { 
                 return (1 + 2) * (3 + 4); 
@@ -68,7 +68,7 @@ class BasicLanguageTests {
     )
 
     @Test
-    fun `test nested bracketing`() = runCodeForResult(
+    fun `nested bracketing`() = runCodeForResult(
         """
             int main() { 
                 return (((1 + 2)) * (3 + 4)); 
@@ -77,7 +77,7 @@ class BasicLanguageTests {
     )
 
     @Test
-    fun `test function call no args`() = runCodeForResult(
+    fun `function call no args`() = runCodeForResult(
         """
             int main() { 
                 return getNum(); 
@@ -90,7 +90,7 @@ class BasicLanguageTests {
     )
 
     @Test
-    fun `test function call no args two levels`() = runCodeForResult(
+    fun `function call no args two levels`() = runCodeForResult(
         """
             int main() { 
                 return getNum(); 
@@ -107,7 +107,7 @@ class BasicLanguageTests {
     )
 
     @Test
-    fun `test function call with argument`() = runCodeForResult(
+    fun `function call with argument`() = runCodeForResult(
         """
             int main() {
                 return triple(3);
@@ -120,7 +120,7 @@ class BasicLanguageTests {
     )
 
     @Test
-    fun `test function call with two arguments`() = runCodeForResult(
+    fun `function call with two arguments`() = runCodeForResult(
         """
             int main() {
                 return sub(100, 1);
@@ -133,7 +133,7 @@ class BasicLanguageTests {
     )
 
     @Test
-    fun `test function call with two arguments with caller clearing stack`() = runCodeForResult(
+    fun `function call with two arguments with caller clearing stack`() = runCodeForResult(
         """
             int main() {
                 return sub(100, 1) + sub(8, 3);
@@ -144,5 +144,36 @@ class BasicLanguageTests {
             }
         """, 104
     )
+
+    @Test
+    fun `if statement and recursion`() = runCodeForResult(
+        """
+            int main() {
+                return factorial(6);
+            }
+            
+            int factorial(int n) {
+                if(n == 1) {
+                    return 1;
+                } else {
+                    return n * factorial(n - 1); 
+                }
+            }
+        """, 720
+    )
+
+    @Test
+    fun `if statement without else`() = runCodeForResult(
+        """
+            int main() {
+                if(1 == 2) {
+                    return 2;
+                }
+                return 1;
+            }
+        """, 1
+    )
+
+
 
 }

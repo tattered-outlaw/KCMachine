@@ -21,10 +21,11 @@ private const val SUB = 12
 private const val MUL = 13
 private const val DIV = 14
 private const val PUSH_A = 15
-
 private const val DEC_STACK = 16
-
 private const val PUSH_STACK_OFFSET = 17
+private const val EQ = 18
+private const val JMP = 19
+private const val JMP_Z = 20
 
 fun execute(code: List<Long>, ramSize: Int) = ExecutionEngine(ramSize).executeCode(code)
 
@@ -87,6 +88,9 @@ class ExecutionEngine(ramSize: Int) {
             PUSH_A -> PUSH_A(operand)
             DEC_STACK -> DEC_STACK(operand)
             PUSH_STACK_OFFSET -> PUSH_STACK_OFFSET(operand)
+            EQ -> EQ()
+            JMP -> JMP(operand)
+            JMP_Z -> JMP_Z(operand)
             else -> throw ExecuteException("Unrecognized opcode $opcode.")
         }
     }
@@ -140,6 +144,12 @@ class ExecutionEngine(ramSize: Int) {
         ip = ram[++sp].toInt()
     }
 
+    private fun EQ() {
+        val rhs = ram[++sp]
+        val lhs = ram[++sp]
+        ram[sp--] = if (lhs == rhs) 1 else 0
+    }
+
     private fun ADD() {
         val rhs = ram[++sp]
         val lhs = ram[++sp]
@@ -170,6 +180,16 @@ class ExecutionEngine(ramSize: Int) {
 
     private fun PUSH_STACK_OFFSET(offset: Int) {
         ram[sp--] = ram[sp - offset + 1]
+    }
+
+    private fun JMP(address: Int) {
+        ip = address
+    }
+
+    private fun JMP_Z(address: Int) {
+        if(ram[++sp] == 0L) {
+            ip = address
+        }
     }
 
 }

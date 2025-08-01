@@ -8,14 +8,14 @@ private val patternMap = mapOf(
     "[0-9]+" to ::DecimalIntegralLiteral
 )
 
-private val symbolList = listOf("\\(", "\\)", "\\{", "\\}", "\\[", "\\]", "\\+", "-", "\\*", "/", ";", ",")
+private val symbolList = listOf("\\(", "\\)", "\\{", "\\}", "\\[", "\\]", "\\==", "\\+", "-", "\\*", "/", ";", ",")
 
 private val tokenSpecs = sequence {
     yieldAll(patternMap.entries.map(::TokenSpec))
     yieldAll(symbolList.map { TokenSpec(it, ::Symbol) })
 }.toList()
 
-private val KEYWORDS = setOf("int", "return")
+private val KEYWORDS = setOf("int", "return", "if", "else")
 
 fun lexC(source: String): List<Token> = sequence {
     for (token in lex(tokenSpecs, source)) {

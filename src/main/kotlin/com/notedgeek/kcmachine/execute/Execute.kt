@@ -20,6 +20,11 @@ private const val ADD = 11
 private const val SUB = 12
 private const val MUL = 13
 private const val DIV = 14
+private const val PUSH_A = 15
+
+private const val DEC_STACK = 16
+
+private const val PUSH_STACK_OFFSET = 17
 
 fun execute(code: List<Long>, ramSize: Int) = ExecutionEngine(ramSize).executeCode(code)
 
@@ -79,6 +84,9 @@ class ExecutionEngine(ramSize: Int) {
             SUB -> SUB()
             MUL -> MUL()
             DIV -> DIV()
+            PUSH_A -> PUSH_A(operand)
+            DEC_STACK -> DEC_STACK(operand)
+            PUSH_STACK_OFFSET -> PUSH_STACK_OFFSET(operand)
             else -> throw ExecuteException("Unrecognized opcode $opcode.")
         }
     }
@@ -119,6 +127,10 @@ class ExecutionEngine(ramSize: Int) {
         ram[bp + 3 + index] = ram[++sp]
     }
 
+    private fun PUSH_A(index: Int) {
+        ram[sp--] = ram[bp + 3 + index]
+    }
+
     private fun CALL(address: Int) {
         ram[sp--] = ip.toLong()
         ip = address
@@ -150,6 +162,14 @@ class ExecutionEngine(ramSize: Int) {
         val rhs = ram[++sp]
         val lhs = ram[++sp]
         ram[sp--] = lhs / rhs
+    }
+
+    private fun DEC_STACK(size: Int) {
+        sp += size
+    }
+
+    private fun PUSH_STACK_OFFSET(offset: Int) {
+        ram[sp--] = ram[sp - offset + 1]
     }
 
 }

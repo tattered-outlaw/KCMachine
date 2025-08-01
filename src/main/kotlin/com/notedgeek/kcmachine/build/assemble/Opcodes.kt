@@ -15,7 +15,10 @@ val opcodeList = listOf (
     "ADD",
     "SUB",
     "MUL",
-    "DIV"
+    "DIV",
+    "PUSH_A",
+    "DEC_STACK",
+    "PUSH_STACK_OFFSET"
 )
 
 val opcodeMap = opcodeList.mapIndexed { index, opcode -> (opcode to index) }.toMap()

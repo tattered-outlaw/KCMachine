@@ -156,7 +156,7 @@ fun parseParameterDeclarations(tokenBuffer: TokenBuffer): List<CGParameterDeclar
     tokenBuffer.consume("(")
     val parameterDeclarations = ArrayList<CGParameterDeclaration>()
     while (true) {
-        parameterDeclarations.add(parseParameterDeclaration(tokenBuffer))
+        parameterDeclarations.add(parseSpecifiedDeclarator(tokenBuffer))
         if (tokenBuffer.nextLexeme() == ",") {
             tokenBuffer.consume()
         } else break

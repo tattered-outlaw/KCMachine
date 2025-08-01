@@ -42,9 +42,11 @@ val declarationSpecifierLexemeMap = sequence {
     yieldAll(CGStorageClassSpecifier.lexemeMap.entries)
 }.map { it.key to it.value }.toMap()
 
-data class CGParameterDeclaration(
+data class SpecifiedDeclarator(
     override var start: Int,
     override var end: Int,
     val declarationSpecifiers: List<CGDeclarationSpecifier>,
     val declarator: CGDeclarator
 ) : CGElement
+
+typealias CGParameterDeclaration = SpecifiedDeclarator

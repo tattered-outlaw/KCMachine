@@ -30,4 +30,6 @@ data class ArrayType(override val wrappedType: Type) : WrapperType {
 data class NameAndType(val name: String, val type: Type)
 data class QualifiedType(var type: Type)
 
-data class QualifiedNameAndType(val name: String, val type: QualifiedType)
+data class QualifiedNameAndType(val name: String, val type: QualifiedType) {
+    constructor(nameAndType: NameAndType) : this(nameAndType.name, QualifiedType(nameAndType.type))
+}

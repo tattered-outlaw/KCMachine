@@ -1,15 +1,13 @@
 package com.notedgeek.kcmachine.build.compile.backend.translate
 
-import com.notedgeek.kcmachine.build.compile.backend.model.BinaryOperatorExpression
-import com.notedgeek.kcmachine.build.compile.backend.model.Expression
-import com.notedgeek.kcmachine.build.compile.backend.model.FunctionCallExpression
-import com.notedgeek.kcmachine.build.compile.backend.model.IntExpression
+import com.notedgeek.kcmachine.build.compile.backend.model.*
 
 fun translateExpression(expr: Expression, translationContext: TranslationContext) {
     when (expr) {
         is IntExpression -> translateIntExpression(expr, translationContext)
         is BinaryOperatorExpression -> translateBinaryOperatorInstruction(expr, translationContext)
         is FunctionCallExpression -> translateFunctionCallExpression(expr, translationContext)
+        is IdentifierExpression -> translateIdentifierExpression(expr, translationContext)
         else -> TODO()
     }
 }
@@ -30,11 +28,27 @@ private fun translateBinaryOperatorInstruction(expr: BinaryOperatorExpression, t
 
 private fun translateFunctionCallExpression(functionCallExpression: FunctionCallExpression, translationContext: TranslationContext) {
     with(translationContext) {
-        emit(PUSH_CONST("0"))
+        val arguments = functionCallExpression.arguments.reversed()
+        if(arguments.isNotEmpty()) {
+            arguments.forEach { translateExpression(it, translationContext) }
+        } else {
+            emit(PUSH_CONST("0"))
+        }
         emit(CALL(functionCallExpression.name))
+        val argumentsSize = arguments.size
+        if(argumentsSize > 1) {
+            emit(DEC_STACK(argumentsSize))
+            emit(PUSH_STACK_OFFSET(argumentsSize - 1))
+        }
     }
 }
 
 private fun translateIntExpression(expr: IntExpression, translationContext: TranslationContext) {
     translationContext.emit(PUSH_CONST(expr.value.toString()))
+}
+
+private fun translateIdentifierExpression(expr: IdentifierExpression, translationContext: TranslationContext) {
+    when (val nameReference = expr.nameReference) {
+        is ArgumentReference -> translationContext.emit(PUSH_A(nameReference.index))
+    }
 }

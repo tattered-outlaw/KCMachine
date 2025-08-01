@@ -105,4 +105,44 @@ class BasicLanguageTests {
             }
             """, 99
     )
+
+    @Test
+    fun `test function call with argument`() = runCodeForResult(
+        """
+            int main() {
+                return triple(3);
+            }
+            
+            int triple(int n) {
+                return n * 3;
+            }
+        """, 9
+    )
+
+    @Test
+    fun `test function call with two arguments`() = runCodeForResult(
+        """
+            int main() {
+                return sub(100, 1);
+            }
+            
+            int sub(int a, int b) {
+                return a - b;
+            }
+        """, 99
+    )
+
+    @Test
+    fun `test function call with two arguments with caller clearing stack`() = runCodeForResult(
+        """
+            int main() {
+                return sub(100, 1) + sub(8, 3);
+            }
+            
+            int sub(int a, int b) {
+                return a - b;
+            }
+        """, 104
+    )
+
 }

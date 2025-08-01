@@ -2,18 +2,9 @@ package com.notedgeek.kcmachine.build.compile.frontend.parse
 
 import com.notedgeek.kcmachine.build.compile.frontend.grammar.*
 
-// used initially to collect parsed tokens while trying to discriminate between
-// function_definition and declaration
-private data class DeclarationHead(
-    val start: Int,
-    val end: Int,
-    val declarationSpecifiers: List<CGDeclarationSpecifier>,
-    val declarator: CGDeclarator
-)
-
 fun parseExternalDeclaration(tokenBuffer: TokenBuffer): CGExternalDeclaration {
     val start = tokenBuffer.index
-    val declarationHead = parseExternalDeclarationHead(tokenBuffer)
+    val declarationHead = parseSpecifiedDeclarator(tokenBuffer)
     val declarator = declarationHead.declarator
     if (tokenBuffer.nextLexeme() == "{" && declarator is CGFunctionDeclarator) {
         return parseFunctionDefinition(tokenBuffer, start, declarationHead.declarationSpecifiers, declarator)
@@ -38,7 +29,6 @@ fun parseFunctionDefinition(
     )
 }
 
-
 fun parseDeclarationSpecifiers(tokenBuffer: TokenBuffer): List<CGDeclarationSpecifier> = sequence {
     while (true) {
         val lexeme = tokenBuffer.nextLexeme()
@@ -61,15 +51,9 @@ fun parseDeclarationSpecifiers(tokenBuffer: TokenBuffer): List<CGDeclarationSpec
     }
 }.toList()
 
-fun parseParameterDeclaration(tokenBuffer: TokenBuffer): CGParameterDeclaration {
+fun parseSpecifiedDeclarator(tokenBuffer: TokenBuffer): SpecifiedDeclarator {
     val start = tokenBuffer.index
     val declarationSpecifiers = parseDeclarationSpecifiers(tokenBuffer)
     val declarator = parseDeclarator(tokenBuffer)
-    return CGParameterDeclaration(start, tokenBuffer.index, declarationSpecifiers, declarator)
-}
-private fun parseExternalDeclarationHead(tokenBuffer: TokenBuffer): DeclarationHead {
-    val start = tokenBuffer.index
-    val declarationSpecifiers = parseDeclarationSpecifiers(tokenBuffer)
-    val declarator = parseConcreteDeclarator(tokenBuffer)
-    return DeclarationHead(start, tokenBuffer.index, declarationSpecifiers, declarator)
+    return SpecifiedDeclarator(start, tokenBuffer.index, declarationSpecifiers, declarator)
 }

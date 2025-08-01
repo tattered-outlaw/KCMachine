@@ -7,19 +7,19 @@ import com.notedgeek.kcmachine.build.compile.frontend.grammar.CGCompoundStatemen
 import com.notedgeek.kcmachine.build.compile.frontend.grammar.CGReturnStatement
 import com.notedgeek.kcmachine.build.compile.frontend.grammar.CGStatement
 
-fun analyzeStatement(cgStatement: CGStatement): Statement {
+fun analyzeStatement(cgStatement: CGStatement, analysisContext: AnalysisContext): Statement {
     return when (cgStatement) {
-        is CGCompoundStatement -> analyzeCompoundStatement(cgStatement)
-        is CGReturnStatement -> analyzeReturnStatement(cgStatement)
+        is CGCompoundStatement -> analyzeCompoundStatement(cgStatement, analysisContext)
+        is CGReturnStatement -> analyzeReturnStatement(cgStatement, analysisContext)
         else -> TODO()
     }
 }
 
-fun analyzeCompoundStatement(cgCompoundStatement: CGCompoundStatement): CompoundStatement {
-    val statements = cgCompoundStatement.statements.map { analyzeStatement(it) }
+fun analyzeCompoundStatement(cgCompoundStatement: CGCompoundStatement, analysisContext: AnalysisContext): CompoundStatement {
+    val statements = cgCompoundStatement.statements.map { analyzeStatement(it, analysisContext) }
     return CompoundStatement(cgCompoundStatement.start, cgCompoundStatement.end, statements)
 }
 
-private fun analyzeReturnStatement(cgReturnStatement: CGReturnStatement): ReturnStatement {
-    return ReturnStatement(cgReturnStatement.start, cgReturnStatement.end, analyzeExpression(cgReturnStatement.expression))
+private fun analyzeReturnStatement(cgReturnStatement: CGReturnStatement, analysisContext: AnalysisContext): ReturnStatement {
+    return ReturnStatement(cgReturnStatement.start, cgReturnStatement.end, analyzeExpression(cgReturnStatement.expression, analysisContext))
 }

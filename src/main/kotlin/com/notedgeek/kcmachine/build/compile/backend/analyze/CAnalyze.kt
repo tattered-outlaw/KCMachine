@@ -18,6 +18,8 @@ fun analyzeC(cgCompilationUnit: CGCompilationUnit): CompilationUnit {
 }
 
 private fun analyzeFunctionDefinition(cgFunctionDefinition: CGFunctionDefinition): FunctionDefinition {
+    val analysisContext = AnalysisContext()
+
     if (cgFunctionDefinition.declarationSpecifiers.isEmpty()) {
         throw AnalyzeException("Declaration specifiers list is empty.")
     }
@@ -53,9 +55,11 @@ private fun analyzeFunctionDefinition(cgFunctionDefinition: CGFunctionDefinition
                 typeFromDeclarationSpecifiers(it.declarationSpecifiers)
             )
         })
+
+        parameters.forEach { analysisContext.addArgument(it.name) }
     }
 
-    val compoundStatement = analyzeCompoundStatement(cgFunctionDefinition.compoundStatement)
+    val compoundStatement = analyzeCompoundStatement(cgFunctionDefinition.compoundStatement, analysisContext)
 
     return FunctionDefinition(
         cgFunctionDefinition.start,

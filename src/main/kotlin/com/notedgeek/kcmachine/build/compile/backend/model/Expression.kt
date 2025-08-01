@@ -27,6 +27,6 @@ data class FunctionCallExpression(
 data class IntExpression(override val start: Int, override val end: Int, val value: Long) : Expression {
     override val type = IntType
 }
-data class IdentifierExpression(override val start: Int, override val end: Int, val value: String) : Expression {
+data class IdentifierExpression(override val start: Int, override val end: Int, val value: String, val nameReference: NameReference) : Expression {
     override val type = IntType
 }

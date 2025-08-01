@@ -134,7 +134,7 @@ fun parseAbstractEmptyFunctionDeclarator(tokenBuffer: TokenBuffer, declarator: C
 
 fun parseAbstractParameterFunctionDeclarator(tokenBuffer: TokenBuffer, declarator: CGAbstractDeclarator): CGAbstractParameterFunctionDeclarator {
     val start = tokenBuffer.index
-    var parameterDeclarations = parseParameterDeclarations(tokenBuffer)
+    val parameterDeclarations = parseParameterDeclarations(tokenBuffer)
     return CGAbstractParameterFunctionDeclarator(start, tokenBuffer.index, declarator, parameterDeclarations)
 }
 

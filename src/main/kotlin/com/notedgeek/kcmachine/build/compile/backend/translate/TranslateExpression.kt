@@ -15,10 +15,10 @@ fun translateExpression(expr: Expression, translationContext: TranslationContext
 }
 
 private val binaryOperationInstructionMap = mapOf(
-    "+" to ADD(),
-    "-" to SUB(),
-    "*" to MUL(),
-    "/" to DIV()
+    "+" to ADD,
+    "-" to SUB,
+    "*" to MUL,
+    "/" to DIV
 )
 
 private fun translateBinaryOperatorInstruction(expr: BinaryOperatorExpression, translationContext: TranslationContext) {

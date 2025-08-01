@@ -11,7 +11,7 @@ class TokenSpec(patternString: String, val tokenConstructor: (String) -> Token) 
 
 fun lex(tokenSpecs: List<TokenSpec>, source: String): List<Token> = sequence {
     // Using CharBuffer avoids re-creating a new String each time we advance through input having
-    // consumed a token (we can't just use matcher.find(index) and change the value of index,
+    // consumed a token (we can't just use matcher.find(index) and change the value of 'index',
     // since ^ anchor pattern won't match properly).
     val chars = CharBuffer.wrap(source)
     var index = 0

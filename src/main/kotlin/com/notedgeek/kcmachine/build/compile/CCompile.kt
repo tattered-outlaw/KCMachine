@@ -11,7 +11,7 @@ fun compile(source: String): List<String> {
         emit(LBP("0"))
         emit(PUSH_CONST("0"))
         emit(CALL("main"))
-        emit(HALT())
+        emit(HALT)
     }
     translateC(analyzeC(parseC(source)), translationContext)
     return translationContext.code

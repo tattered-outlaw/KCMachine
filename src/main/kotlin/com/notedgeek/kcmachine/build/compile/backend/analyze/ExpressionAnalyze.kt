@@ -8,7 +8,7 @@ fun analyzeExpression(cgExpression: CGExpression): Expression {
         is CGIntegerConstant -> analyzeIntExpression(cgExpression)
         is CGBinaryOperationExpression -> analyzeBinaryOperatorExpression(cgExpression)
         is CGFunctionCallExpression -> analyzeFunctionCallExpression(cgExpression)
-        is CGIdentifierExpression -> analyzeIdentierExpression(cgExpression)
+        is CGIdentifierExpression -> analyzeIdentifierExpression(cgExpression)
         else -> TODO()
     }
 }
@@ -28,6 +28,6 @@ private fun analyzeIntExpression(expr: CGIntegerConstant): IntExpression {
     return IntExpression(expr.start, expr.end, expr.value)
 }
 
-private fun analyzeIdentierExpression(expr: CGIdentifierExpression): IdentifierExpression {
+private fun analyzeIdentifierExpression(expr: CGIdentifierExpression): IdentifierExpression {
     return IdentifierExpression(expr.start, expr.end, expr.value)
 }

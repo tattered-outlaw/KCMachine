@@ -19,8 +19,8 @@ private fun translateReturnStatement(returnStatement: ReturnStatement, translati
     translateExpression(returnStatement.expression, translationContext)
     with(translationContext) {
         emit(SAVE_A("0"))
-        emit(BP_TO_SP())
-        emit(POP_BP())
-        emit(RETURN())
+        emit(BP_TO_SP)
+        emit(POP_BP)
+        emit(RETURN)
     }
 }

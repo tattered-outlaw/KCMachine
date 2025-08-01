@@ -32,10 +32,6 @@ private fun analyzeFunctionDefinition(cgFunctionDefinition: CGFunctionDefinition
         TODO()
     }
 
-    if (cgFunctionDefinition.declarator !is CGFunctionDeclarator) {
-        TODO()
-    }
-
     val lhsDeclarator = cgFunctionDefinition.declarator.declarator
 
     if (lhsDeclarator !is CGIdentifierDeclarator) {
@@ -70,10 +66,6 @@ private fun analyzeFunctionDefinition(cgFunctionDefinition: CGFunctionDefinition
         compoundStatement
     )
 
-}
-
-fun qualifiedTypeFromDeclarationSpecifiers(declarationSpecifiers: List<CGDeclarationSpecifier>): QualifiedType {
-    return QualifiedType(IntType)
 }
 
 fun typeFromDeclarationSpecifiers(declarationSpecifiers: List<CGDeclarationSpecifier>): Type {

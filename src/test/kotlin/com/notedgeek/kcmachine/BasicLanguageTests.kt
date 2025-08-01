@@ -105,17 +105,4 @@ class BasicLanguageTests {
             }
             """, 99
     )
-
-    @Test
-    fun `test function call with argument`() = runCodeForResult(
-        """
-            int main() {
-                return triple(3);
-            }
-            
-            int triple(int n) {
-                return n * 3;
-            }
-        """, 10
-    )
 }

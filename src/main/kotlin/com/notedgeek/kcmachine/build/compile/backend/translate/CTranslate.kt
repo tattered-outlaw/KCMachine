@@ -16,8 +16,7 @@ fun translateC(compilationUnit: CompilationUnit, translationContext: Translation
 private fun translateFunctionDefinition(functionDefinition: FunctionDefinition, translationContext: TranslationContext) {
     with(translationContext) {
         emit("${functionDefinition.name}:")
-        emit(PUSH_BP)
-        emit(SP_TO_BP)
+        emit(ENTER(0))
     }
     functionDefinition.statement.statements.forEach { translateStatement(it, translationContext) }
 }

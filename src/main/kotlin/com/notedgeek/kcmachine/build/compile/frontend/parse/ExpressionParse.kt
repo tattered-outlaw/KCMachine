@@ -8,7 +8,8 @@ import com.notedgeek.kcmachine.build.compile.frontend.grammar.*
 private val binaryExpressionParserStack = listOf(
     listOf("*", "/"),
     listOf("+", "-"),
-    listOf("==")
+    listOf("=="),
+    listOf("||")
 ).fold(::parsePostfixExpression, ::addParserToStack)
 
 fun parseExpression(tokenBuffer: TokenBuffer): CGExpression {

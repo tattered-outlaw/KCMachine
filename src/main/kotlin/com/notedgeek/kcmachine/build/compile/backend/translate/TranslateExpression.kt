@@ -13,7 +13,8 @@ fun translateExpression(expr: Expression, translationContext: TranslationContext
 }
 
 private val binaryOperationInstructionMap = mapOf(
-    "==" to "EQ",
+    "||" to LOR,
+    "==" to EQ,
     "+" to ADD,
     "-" to SUB,
     "*" to MUL,

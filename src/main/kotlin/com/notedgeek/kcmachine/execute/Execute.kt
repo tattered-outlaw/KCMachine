@@ -9,23 +9,21 @@ private const val HALT = 0
 private const val PUSH_CONST = 1
 private const val LBP = 2
 private const val LSP = 3
-private const val PUSH_BP = 4
-private const val POP_BP = 5
-private const val SP_TO_BP = 6
-private const val BP_TO_SP = 7
-private const val SAVE_A = 8
-private const val CALL = 9
-private const val RETURN = 10
-private const val ADD = 11
-private const val SUB = 12
-private const val MUL = 13
-private const val DIV = 14
-private const val PUSH_A = 15
-private const val DEC_STACK = 16
-private const val PUSH_STACK_OFFSET = 17
-private const val EQ = 18
-private const val JMP = 19
-private const val JMP_Z = 20
+private const val SAVE_A = 4
+private const val CALL = 5
+private const val RETURN = 6
+private const val ADD = 7
+private const val SUB = 8
+private const val MUL = 9
+private const val DIV = 10
+private const val PUSH_A = 11
+private const val DEC_STACK = 12
+private const val PUSH_STACK_OFFSET = 13
+private const val EQ = 14
+private const val JMP = 15
+private const val JMP_Z = 16
+private const val LOR = 17
+private const val ENTER = 18
 
 fun execute(code: List<Long>, ramSize: Int) = ExecutionEngine(ramSize).executeCode(code)
 
@@ -37,7 +35,7 @@ class ExecutionEngine(ramSize: Int) {
     private var bp: Int = 0
 
     private var running = false
-    private val debug = true
+    private val debug = false
 
     fun executeCode(code: List<Long>): Long {
         code.forEachIndexed { i, v -> ram[i] = v }
@@ -74,10 +72,6 @@ class ExecutionEngine(ramSize: Int) {
             PUSH_CONST -> PUSH_CONST(operand)
             LBP -> LBP(operand)
             LSP -> LSP(operand)
-            PUSH_BP -> PUSH_BP()
-            POP_BP -> POP_BP()
-            SP_TO_BP -> SP_TO_BP()
-            BP_TO_SP -> BP_TO_SP()
             SAVE_A -> SAVE_A(operand)
             CALL -> CALL(operand)
             RETURN -> RETURN()
@@ -91,6 +85,8 @@ class ExecutionEngine(ramSize: Int) {
             EQ -> EQ()
             JMP -> JMP(operand)
             JMP_Z -> JMP_Z(operand)
+            LOR -> LOR()
+            ENTER -> ENTER(operand)
             else -> throw ExecuteException("Unrecognized opcode $opcode.")
         }
     }
@@ -110,23 +106,11 @@ class ExecutionEngine(ramSize: Int) {
     private fun LSP(constant: Int) {
         sp = constant
     }
-
-    private fun PUSH_BP() {
+    private fun ENTER(localCount: Int) {
         ram[sp--] = bp.toLong()
-    }
-
-    private fun POP_BP() {
-        bp = ram[++sp].toInt()
-    }
-
-    private fun SP_TO_BP() {
         bp = sp
+        sp -= localCount
     }
-
-    private fun BP_TO_SP() {
-        sp = bp
-    }
-
     private fun SAVE_A(index: Int) {
         ram[bp + 3 + index] = ram[++sp]
     }
@@ -141,6 +125,8 @@ class ExecutionEngine(ramSize: Int) {
     }
 
     private fun RETURN() {
+        sp = bp
+        bp = ram[++sp].toInt()
         ip = ram[++sp].toInt()
     }
 
@@ -148,6 +134,11 @@ class ExecutionEngine(ramSize: Int) {
         val rhs = ram[++sp]
         val lhs = ram[++sp]
         ram[sp--] = if (lhs == rhs) 1 else 0
+    }
+    private fun LOR() {
+        val rhs = ram[++sp]
+        val lhs = ram[++sp]
+        ram[sp--] = if (lhs != 0L || rhs != 0L) 1 else 0
     }
 
     private fun ADD() {

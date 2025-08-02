@@ -5,10 +5,6 @@ val opcodeList = listOf (
     "PUSH_CONST",
     "LBP",
     "LSP",
-    "PUSH_BP",
-    "POP_BP",
-    "SP_TO_BP",
-    "BP_TO_SP",
     "SAVE_A",
     "CALL",
     "RETURN",
@@ -21,7 +17,9 @@ val opcodeList = listOf (
     "PUSH_STACK_OFFSET",
     "EQ",
     "JMP",
-    "JMP_Z"
+    "JMP_Z",
+    "LOR",
+    "ENTER"
 )
 
 val opcodeMap = opcodeList.mapIndexed { index, opcode -> (opcode to index) }.toMap()

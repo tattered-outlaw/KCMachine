@@ -18,7 +18,8 @@ private val binaryOperationInstructionMap = mapOf(
     "+" to ADD,
     "-" to SUB,
     "*" to MUL,
-    "/" to DIV
+    "/" to DIV,
+    "%" to MOD
 )
 
 private fun translateBinaryOperatorInstruction(expr: BinaryOperatorExpression, translationContext: TranslationContext) {

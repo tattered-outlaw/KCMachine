@@ -19,7 +19,8 @@ val opcodeList = listOf (
     "JMP",
     "JMP_Z",
     "LOR",
-    "ENTER"
+    "ENTER",
+    "MOD"
 )
 
 val opcodeMap = opcodeList.mapIndexed { index, opcode -> (opcode to index) }.toMap()

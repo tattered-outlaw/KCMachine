@@ -6,7 +6,7 @@ import com.notedgeek.kcmachine.build.compile.frontend.Symbol
 import com.notedgeek.kcmachine.build.compile.frontend.grammar.*
 
 private val binaryExpressionParserStack = listOf(
-    listOf("*", "/"),
+    listOf("*", "/", "%"),
     listOf("+", "-"),
     listOf("=="),
     listOf("||")

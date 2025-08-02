@@ -41,7 +41,7 @@ class BasicLanguageTests {
     )
 
     @Test
-    fun `associativity`() = runCodeForResult(
+    fun associativity() = runCodeForResult(
         """
             int main() { 
                 return 5 - 3 - 1; 
@@ -50,7 +50,7 @@ class BasicLanguageTests {
     )
 
     @Test
-    fun `precedence`() = runCodeForResult(
+    fun precedence() = runCodeForResult(
         """
             int main() { 
                 return 1 + 2 * 3 + 4 / 2; 
@@ -59,7 +59,7 @@ class BasicLanguageTests {
     )
 
     @Test
-    fun `bracketing`() = runCodeForResult(
+    fun bracketing() = runCodeForResult(
         """
             int main() { 
                 return (1 + 2) * (3 + 4); 
@@ -175,7 +175,7 @@ class BasicLanguageTests {
     )
 
     @Test
-    fun `fib test`() = runCodeForResult(
+    fun fibonacci() = runCodeForResult(
         """
             int main() {
                 return fib(9);
@@ -191,6 +191,17 @@ class BasicLanguageTests {
         """, 34
     )
 
-
-
+    @Test
+    fun gcd() = runCodeForResult(
+        """
+            int main() {
+                return gcd(1071, 462);
+            }
+            
+            int gcd(int a, int b) {
+                if (b == 0) return a;
+                return gcd(b, a % b);
+            }        
+        """, 21
+    )
 }

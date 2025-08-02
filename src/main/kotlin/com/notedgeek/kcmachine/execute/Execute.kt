@@ -24,6 +24,7 @@ private const val JMP = 15
 private const val JMP_Z = 16
 private const val LOR = 17
 private const val ENTER = 18
+private const val MOD = 19
 
 fun execute(code: List<Long>, ramSize: Int) = ExecutionEngine(ramSize).executeCode(code)
 
@@ -87,6 +88,7 @@ class ExecutionEngine(ramSize: Int) {
             JMP_Z -> JMP_Z(operand)
             LOR -> LOR()
             ENTER -> ENTER(operand)
+            MOD -> MOD()
             else -> throw ExecuteException("Unrecognized opcode $opcode.")
         }
     }
@@ -163,6 +165,12 @@ class ExecutionEngine(ramSize: Int) {
         val rhs = ram[++sp]
         val lhs = ram[++sp]
         ram[sp--] = lhs / rhs
+    }
+
+    private fun MOD() {
+        val rhs = ram[++sp]
+        val lhs = ram[++sp]
+        ram[sp--] = lhs % rhs
     }
 
     private fun DEC_STACK(size: Int) {
